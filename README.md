@@ -2,54 +2,81 @@
 
 ## Project Overview
 
-Tabletop-RPG-Character-Creation is a final-year group project developed by three students. The application allows users to create and manage tabletop RPG characters through a user-friendly interface.
+The Tabletop-RPG-Character-Creation application is designed to help players create, customize, and manage tabletop role-playing game (RPG) characters.
 
-### Technology Stack
+Users will be able to create characters by entering information such as name, race, class, age, and attributes. The application will apply the game rules and calculations defined for the project.
 
-**Frontend**
+This is a final-year group project developed by Group 2.
 
-* React
-* TypeScript
-* Vite
+---
 
-**Backend**
+# Technology Stack
 
-* C# .NET Web API
+## Frontend
 
-**Database**
+- React
+- TypeScript
+- Vite
 
-* MongoDB
+## Backend
 
-## Project Structure
+- C# .NET Web API
+
+## Database
+
+- MongoDB
+- MongoDB .NET Driver
+
+## Version Control
+
+- Git
+- GitHub
+
+---
+
+# Project Structure
 
 ```text
 Tabletop-RPG-Character-Creation
 │
 ├── backend
+│   └── TabletopRPG.API
+│       └── C# .NET Web API
+│
 ├── frontend
+│   └── React + TypeScript + Vite
+│
 ├── database
+│   └── MongoDB scripts and documentation
+│
 ├── docs
+│
 └── README.md
 ```
-## Software Requirements
+
+---
+
+# Software Requirements
 
 Before running the project, make sure the following software is installed:
 
-| Software                                 | Version                          |
-| ---------------------------------------- | -------------------------------- |
-| .NET SDK                                 | 10.0.203                         |
-| Node.js                                  | Latest LTS version               |
-| npm                                      | Comes with Node.js               |
-| React                                    | 19.x                             |
-| TypeScript                               | Latest version from package.json |
-| Vite                                     | 8.x                              |
-| Git                                      | Latest version                   |
-| MongoDB                                  | Latest Community Edition         |
-| Visual Studio 2022 or Visual Studio Code | Latest version                   |
+| Software | Version |
+|----------|---------|
+| .NET SDK | 10.0.203 |
+| Node.js | Latest LTS version |
+| npm | Comes with Node.js |
+| React | 19.x |
+| TypeScript | Latest version from package.json |
+| Vite | 8.x |
+| Git | Latest version |
+| MongoDB | Latest Community Edition |
+| Visual Studio 2022 or Visual Studio Code | Latest version |
 
-## Verify Your Installation
+---
 
-Run the following commands to check your installed versions:
+# Verify Installation
+
+Run the following commands:
 
 ```bash
 dotnet --version
@@ -57,9 +84,12 @@ node -v
 npm -v
 git --version
 ```
-## Getting Started
 
-### 1. Clone the Repository
+---
+
+# Getting Started
+
+## 1. Clone the Repository
 
 Clone the project from GitHub:
 
@@ -73,17 +103,25 @@ Move into the project folder:
 cd Tabletop-RPG-Character-Creation
 ```
 
----
-
-### 2. Backend Setup
-
-Move into the backend folder:
+Switch to the development branch:
 
 ```bash
-cd backend
+git checkout Dev
 ```
 
-Restore the project:
+---
+
+# 2. Backend Setup
+
+The backend is developed using C# .NET Web API.
+
+Navigate to the backend project:
+
+```bash
+cd backend/TabletopRPG.API
+```
+
+Restore dependencies:
 
 ```bash
 dotnet restore
@@ -98,10 +136,10 @@ dotnet build
 Run the API:
 
 ```bash
-dotnet run --project TabletopRPG.API
+dotnet run
 ```
 
-The backend will start on a local URL similar to:
+The backend will start on:
 
 ```text
 http://localhost:5089
@@ -109,11 +147,13 @@ http://localhost:5089
 
 ---
 
-### 3. Frontend Setup
+# 3. Frontend Setup
+
+The frontend is developed using React, TypeScript, and Vite.
 
 Open a new terminal.
 
-Move to the frontend folder:
+Navigate to the frontend folder:
 
 ```bash
 cd frontend
@@ -125,63 +165,132 @@ Install dependencies:
 npm install
 ```
 
-Start the React development server:
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-The frontend will start on a local URL similar to:
+The frontend will start on:
 
 ```text
 http://localhost:5173
 ```
-## Database Setup
 
-This project uses **MongoDB** as its database.
+Open this address in your browser.
 
-### Prerequisites
+---
 
-* Install MongoDB Community Edition.
-* Make sure the MongoDB service is running on your computer.
+# 4. Database Setup
 
-### Default Connection
+This project uses MongoDB as the database.
 
-During development, the backend will connect to a local MongoDB server.
+## Prerequisites
 
-Example connection string:
+Install:
+
+- MongoDB Community Edition
+- MongoDB Compass (optional)
+
+Make sure MongoDB is running before starting the backend.
+
+---
+
+## MongoDB Connection
+
+The backend will connect to a local MongoDB database during development.
+
+Default connection string:
 
 ```text
 mongodb://localhost:27017
 ```
 
-The database name for this project will be:
+Database name:
 
 ```text
 TabletopRPG
 ```
 
-> **Note:** The backend connection to MongoDB will be implemented during the development phase of the project.
+> Note: MongoDB connection and database models will be implemented during the development phase.
 
-## Team Workflow
+---
+
+# Running the Complete Application
+
+The application requires two terminals.
+
+## Terminal 1 - Backend
+
+```bash
+cd backend/TabletopRPG.API
+
+dotnet run
+```
+
+Backend URL:
+
+```text
+http://localhost:5089
+```
+
+---
+
+## Terminal 2 - Frontend
+
+```bash
+cd frontend
+
+npm install
+
+npm run dev
+```
+
+Frontend URL:
+
+```text
+http://localhost:5173
+```
+
+---
+
+# Git Team Workflow
 
 This project follows the Git workflow below:
 
 1. Clone the repository.
 2. Switch to the `Dev` branch.
-3. Create a feature branch from `Dev` for your task.
-4. Commit your changes with clear commit messages.
-5. Push your feature branch to GitHub.
-6. Create a Pull Request to merge into `Dev`.
-7. After testing and approval, merge `Dev` into `main`.
+3. Create a feature branch from `Dev`.
+4. Work on the assigned task.
+5. Commit changes using clear commit messages.
+6. Push the feature branch to GitHub.
+7. Create a Pull Request.
+8. Review and merge changes into `Dev`.
+9. Merge `Dev` into `main` after testing.
 
-This workflow helps the team collaborate safely and keeps the `main` branch stable.
+This workflow keeps the main branch stable and allows safe collaboration between team members.
 
-## Contributors
+---
 
-* Faolan
-* Samuel 
-* Max
+# Future Development
+
+Planned features:
+
+- Character creation interface
+- Character validation
+- RPG character attributes and calculations
+- Character management
+- MongoDB database integration
+- REST API endpoints
+- Frontend and backend communication
+- Complete tabletop RPG character system
+
+---
+
+# Contributors
 
 Final Year Project – Group 2
 
+- Faolan
+- Samuel
+- Max
