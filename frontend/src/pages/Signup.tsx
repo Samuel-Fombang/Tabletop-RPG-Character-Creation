@@ -1,260 +1,177 @@
-import {
-  useState,
-  type ChangeEvent,
-  type FormEvent,
-} from 'react';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { Link, useNavigate } from 'react-router-dom';
+import FormInput from "../components/FormInput";
 
-type RegistrationInput = {
-  username: string;
-  email: string;
-  name: string;
-  birthday: string;
-  password: string;
-  passwordConfirmation: string;
-};
-
-const usernamePattern = /^[A-Za-zА-Яа-яЁё0-9]{2,12}$/;
-const namePattern = /^[A-Za-zА-Яа-яЁё]{2,12}$/;
-
-const birthdayPattern =
-  /^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])$/;
-
-const passwordPattern =
-  /^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9]{6,30}$/;
-
-const Signup = () => {
+function Signup() {
   const navigate = useNavigate();
 
-  const [userInput, setUserInput] = useState<RegistrationInput>({
-    username: '',
-    email: '',
-    name: '',
-    birthday: '',
-    password: '',
-    passwordConfirmation: '',
-  });
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [birthday, setBirthday] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] =
+    useState("");
+  const [message, setMessage] = useState("");
 
-  const [message, setMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleChange = (
-    event: ChangeEvent<HTMLInputElement>,
-  ) => {
-    setUserInput((previousInput) => ({
-      ...previousInput,
-      [event.target.name]: event.target.value,
-    }));
-  };
-
-  const registerUser = async (
-    event: FormEvent<HTMLFormElement>,
-  ) => {
-    event.preventDefault();
-    setMessage('');
-
-    if (!usernamePattern.test(userInput.username)) {
-      setMessage(
-        'Username must contain 2 to 12 letters or numbers.',
-      );
-      return;
-    }
-
-    if (!namePattern.test(userInput.name)) {
-      setMessage('Name must contain 2 to 12 letters only.');
-      return;
-    }
-
-    if (!birthdayPattern.test(userInput.birthday)) {
-      setMessage('Birthday must use the format dd.mm.');
-      return;
-    }
-
-    if (!passwordPattern.test(userInput.password)) {
-      setMessage(
-        'Password must contain 6 to 30 letters and numbers, including at least one letter and one number.',
-      );
-      return;
-    }
+  const registerUser = () => {
+    setMessage("");
 
     if (
-      userInput.password !==
-      userInput.passwordConfirmation
+      !username.trim() ||
+      !email.trim() ||
+      !name.trim() ||
+      !birthday ||
+      !password ||
+      !confirmPassword
     ) {
-      setMessage('Passwords do not match.');
+      setMessage("Please complete all fields.");
       return;
     }
 
-    setIsLoading(true);
-
-    try {
-      const response = await fetch(
-        'http://localhost:5089/api/auth/register',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: userInput.username,
-            email: userInput.email,
-            name: userInput.name,
-            birthday: userInput.birthday,
-            password: userInput.password,
-          }),
-        },
+    if (!email.includes("@")) {
+      setMessage(
+        "Please enter a valid email address.",
       );
+      return;
+    }
 
-      if (!response.ok) {
-        throw new Error('Registration failed.');
-      }
+    if (password.length < 6) {
+      setMessage(
+        "Password must contain at least 6 characters.",
+      );
+      return;
+    }
 
-      navigate('/login');
-    } catch (error) {
-      if (error instanceof TypeError) {
-        setMessage('The backend server is not available yet.');
-      } else if (error instanceof Error) {
-        setMessage(error.message);
-      } else {
-        setMessage('Registration failed. Please try again.');
-      }
-    } finally {
-      setIsLoading(false);
+    if (password !== confirmPassword) {
+      setMessage(
+        "The passwords do not match.",
+      );
+      return;
+    }
+
+    const newUser = {
+      username: username.trim(),
+      email: email.trim().toLowerCase(),
+      name: name.trim(),
+      birthday,
+      password,
+    };
+
+    localStorage.setItem(
+      "registeredUser",
+      JSON.stringify(newUser),
+    );
+
+    localStorage.setItem(
+      "token",
+      "temporary-frontend-token",
+    );
+
+    navigate("/profile");
+  };
+
+  const handleKeyDown = (
+    event: React.KeyboardEvent,
+  ) => {
+    if (event.key === "Enter") {
+      registerUser();
     }
   };
 
-  const inputStyle =
-    'w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200';
-
-  const labelStyle =
-    'mb-1 block text-xs font-semibold text-gray-700';
-
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-6">
-      <section className="w-full max-w-sm rounded-xl bg-white p-6 shadow-lg">
-        <h1 className="mb-5 text-center text-2xl font-bold text-gray-800">
-          Registration Form
+    <main className="flex min-h-screen items-center justify-center bg-slate-100 p-6">
+      <section className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
+        <h1 className="text-center text-3xl font-bold text-gray-800">
+          Create Account
         </h1>
 
-        <form onSubmit={registerUser} className="space-y-3">
-          <div>
-            <label htmlFor="username" className={labelStyle}>
-              Username
-            </label>
+        <p className="mt-2 text-center text-gray-500">
+          Register to create and manage RPG
+          characters.
+        </p>
 
-            <input
-              id="username"
-              name="username"
-              type="text"
-              placeholder="Enter username"
-              value={userInput.username}
-              onChange={handleChange}
-              minLength={2}
-              maxLength={12}
-              required
-              className={inputStyle}
-            />
-          </div>
+        <div
+          className="mt-6 space-y-4"
+          onKeyDown={handleKeyDown}
+        >
+          <FormInput
+            label="Username"
+            id="username"
+            type="text"
+            value={username}
+            placeholder="Enter username"
+            required
+            onChange={(event) =>
+              setUsername(event.target.value)
+            }
+          />
 
-          <div>
-            <label htmlFor="email" className={labelStyle}>
-              Email
-            </label>
+          <FormInput
+            label="Full Name"
+            id="name"
+            type="text"
+            value={name}
+            placeholder="Enter your full name"
+            required
+            onChange={(event) =>
+              setName(event.target.value)
+            }
+          />
 
-            <input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="Enter email"
-              value={userInput.email}
-              onChange={handleChange}
-              required
-              className={inputStyle}
-            />
-          </div>
+          <FormInput
+            label="Email"
+            id="email"
+            type="email"
+            value={email}
+            placeholder="Enter your email"
+            required
+            onChange={(event) =>
+              setEmail(event.target.value)
+            }
+          />
 
-          <div>
-            <label htmlFor="name" className={labelStyle}>
-              Name
-            </label>
+          <FormInput
+            label="Birthday"
+            id="birthday"
+            type="date"
+            value={birthday}
+            required
+            onChange={(event) =>
+              setBirthday(event.target.value)
+            }
+          />
 
-            <input
-              id="name"
-              name="name"
-              type="text"
-              placeholder="Enter name"
-              value={userInput.name}
-              onChange={handleChange}
-              minLength={2}
-              maxLength={12}
-              required
-              className={inputStyle}
-            />
-          </div>
+          <FormInput
+            label="Password"
+            id="password"
+            type="password"
+            value={password}
+            placeholder="Enter password"
+            required
+            onChange={(event) =>
+              setPassword(event.target.value)
+            }
+          />
 
-          <div>
-            <label htmlFor="birthday" className={labelStyle}>
-              Birthday
-            </label>
-
-            <input
-              id="birthday"
-              name="birthday"
-              type="text"
-              placeholder="dd.mm"
-              value={userInput.birthday}
-              onChange={handleChange}
-              maxLength={5}
-              required
-              className={inputStyle}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" className={labelStyle}>
-              Password
-            </label>
-
-            <input
-              id="password"
-              name="password"
-              type="password"
-              placeholder="Enter password"
-              value={userInput.password}
-              onChange={handleChange}
-              minLength={6}
-              maxLength={30}
-              required
-              className={inputStyle}
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="passwordConfirmation"
-              className={labelStyle}
-            >
-              Password Confirmation
-            </label>
-
-            <input
-              id="passwordConfirmation"
-              name="passwordConfirmation"
-              type="password"
-              placeholder="Confirm password"
-              value={userInput.passwordConfirmation}
-              onChange={handleChange}
-              minLength={6}
-              maxLength={30}
-              required
-              className={inputStyle}
-            />
-          </div>
+          <FormInput
+            label="Confirm Password"
+            id="confirmPassword"
+            type="password"
+            value={confirmPassword}
+            placeholder="Repeat password"
+            required
+            onChange={(event) =>
+              setConfirmPassword(
+                event.target.value,
+              )
+            }
+          />
 
           {message && (
             <p
-              className="rounded-md bg-red-50 px-3 py-2 text-xs text-red-700"
+              className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-700"
               role="alert"
             >
               {message}
@@ -262,25 +179,24 @@ const Signup = () => {
           )}
 
           <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full rounded-md bg-green-600 py-2 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60"
+            type="button"
+            onClick={registerUser}
+            className="w-full rounded-md bg-green-600 py-3 font-semibold text-white transition hover:bg-green-700"
           >
-            {isLoading ? 'Registering...' : 'Register'}
+            Create Account
           </button>
-        </form>
 
-        <div className="mt-4 text-center">
-          <Link
-            to="/login"
-            className="text-sm font-medium text-blue-600 hover:underline"
+          <button
+            type="button"
+            onClick={() => navigate("/login")}
+            className="w-full rounded-md bg-gray-600 py-3 font-semibold text-white transition hover:bg-gray-700"
           >
-            Already have an account? Log In
-          </Link>
+            Back to Login
+          </button>
         </div>
       </section>
     </main>
   );
-};
+}
 
 export default Signup;
