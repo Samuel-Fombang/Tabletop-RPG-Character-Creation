@@ -18,7 +18,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddSingleton<ICharacterRepository, MongoCharacterRepository>();
+builder.Services.AddSingleton<ICharacterRepository, InMemoryCharacterRepository>();
 var app = builder.Build();
 
 // 3. Swagger Middleware aktivieren (im Development-Modus)
