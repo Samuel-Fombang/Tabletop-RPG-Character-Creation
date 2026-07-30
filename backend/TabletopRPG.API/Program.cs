@@ -1,3 +1,5 @@
+using TabletopRPG.API.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Controller & OpenAPI (Swagger) registrieren
@@ -16,6 +18,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddSingleton<ICharacterRepository, MongoCharacterRepository>();
 var app = builder.Build();
 
 // 3. Swagger Middleware aktivieren (im Development-Modus)
