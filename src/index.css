@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@import 'tailwindcss';
+
+@plugin "daisyui" {
+  themes: [
+    {
+      grimoire: {
+        "color-scheme": "dark",
+        "primary": "#8b1a1a",
+        "primary-content": "#e8d4a0",
+        "secondary": "#5c3010",
+        "secondary-content": "#e8d4a0",
+        "accent": "#b8860b",
+        "accent-content": "#0b0907",
+        "neutral": "#1c1208",
+        "neutral-content": "#c4a882",
+        "base-100": "#0b0907",
+        "base-200": "#120d07",
+        "base-300": "#1e1208",
+        "base-content": "#e8d4a0",
+        "info": "#5f8fbf",
+        "success": "#3a7a3a",
+        "warning": "#b8860b",
+        "error": "#8b1a1a"
+      }
+    }
+  ];
+}
+
+@theme {
+  --color-papyrus: #e8d4a0;
+  --color-papyrus-dim: #c4a882;
+  --color-papyrus-muted: #8a7660;
+  --color-wood: #5c3010;
+  --color-wood-dark: #2e1808;
+  --color-wood-light: #7a4520;
+  --color-gold: #b8860b;
+  --color-crimson: #8b1a1a;
+
+  --font-display: 'Cinzel', serif;
+  --font-body: 'Crimson Text', Georgia, serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html,
+body {
+  font-family: var(--font-body);
+  font-size: 18px;
+}
