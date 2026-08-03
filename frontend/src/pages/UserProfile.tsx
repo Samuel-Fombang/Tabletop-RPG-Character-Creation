@@ -12,138 +12,278 @@ type RegisteredUser = {
 function UserProfile() {
   const navigate = useNavigate();
 
-  const getSavedUser = (): RegisteredUser | null => {
-    const savedUser =
-      localStorage.getItem("registeredUser");
+  const getSavedUser =
+    (): RegisteredUser | null => {
+      const savedUser =
+        localStorage.getItem(
+          "registeredUser",
+        );
 
-    if (!savedUser) {
-      return null;
-    }
+      if (!savedUser) {
+        return null;
+      }
 
-    try {
-      return JSON.parse(savedUser) as RegisteredUser;
-    } catch (error) {
-      console.error(
-        "Unable to read saved user:",
-        error,
-      );
+      try {
+        return JSON.parse(
+          savedUser,
+        ) as RegisteredUser;
+      } catch (error) {
+        console.error(
+          "Unable to read saved user:",
+          error,
+        );
 
-      return null;
-    }
-  };
+        return null;
+      }
+    };
 
   const user = getSavedUser();
 
   const logoutUser = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    localStorage.removeItem(
+      "registeredUser",
+    );
+
+    navigate("/login", {
+      replace: true,
+    });
+  };
+
+  const getInitials = (
+    name: string,
+  ) => {
+    const initials = name
+      .trim()
+      .split(/\s+/)
+      .map((part) => part.charAt(0))
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+
+    return initials || "?";
   };
 
   return (
     <>
       <Navbar />
 
-      <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-8">
-        <section className="w-full max-w-lg rounded-xl bg-white p-8 shadow-lg">
-          <h1 className="text-center text-3xl font-bold text-gray-800">
-            User Profile
-          </h1>
-
-          <p className="mt-2 text-center text-gray-500">
-            View your account information and
-            manage your characters.
-          </p>
-
+      <main className="min-h-screen bg-slate-100 px-4 py-8 sm:px-6 lg:px-8">
+        <section className="mx-auto max-w-5xl">
           {user ? (
-            <>
-              <div className="mt-8 space-y-4 rounded-lg bg-slate-50 p-6">
-                <div>
-                  <p className="text-sm font-semibold text-gray-500">
-                    Username
-                  </p>
+            <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
+              <header className="bg-gradient-to-r from-slate-950 via-indigo-950 to-purple-950 px-6 py-8 text-white sm:px-8">
+                <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+                    <div className="flex h-24 w-24 items-center justify-center rounded-2xl border-2 border-amber-400 bg-slate-800 text-3xl font-bold text-amber-300 shadow-xl">
+                      {getInitials(
+                        user.name ||
+                          user.username,
+                      )}
+                    </div>
 
-                  <p className="text-lg text-gray-800">
-                    {user.username}
-                  </p>
+                    <div>
+                      <p className="text-sm font-semibold uppercase tracking-widest text-purple-200">
+                        User Profile
+                      </p>
+
+                      <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
+                        {user.name ||
+                          user.username}
+                      </h1>
+
+                      <p className="mt-2 text-slate-300">
+                        Manage your account and
+                        access your RPG
+                        characters.
+                      </p>
+                    </div>
+                  </div>
+
+                  <span className="w-fit rounded-full bg-green-400 px-4 py-2 text-sm font-bold text-green-950">
+                    Active Account
+                  </span>
                 </div>
+              </header>
 
-                <div>
-                  <p className="text-sm font-semibold text-gray-500">
-                    Full Name
-                  </p>
+              <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.2fr_0.8fr]">
+                <section className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-widest text-purple-700">
+                      Personal Information
+                    </p>
 
-                  <p className="text-lg text-gray-800">
-                    {user.name}
-                  </p>
-                </div>
+                    <h2 className="mt-2 text-2xl font-bold text-slate-900">
+                      Account Details
+                    </h2>
 
-                <div>
-                  <p className="text-sm font-semibold text-gray-500">
-                    Email
-                  </p>
+                    <p className="mt-2 text-slate-600">
+                      These details are stored
+                      locally while the backend
+                      account system is being
+                      completed.
+                    </p>
+                  </div>
 
-                  <p className="text-lg text-gray-800">
-                    {user.email}
-                  </p>
-                </div>
+                  <div className="mt-8 grid gap-5 sm:grid-cols-2">
+                    <article className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                      <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+                        Username
+                      </p>
 
-                <div>
-                  <p className="text-sm font-semibold text-gray-500">
-                    Birthday
-                  </p>
+                      <p className="mt-2 break-words text-lg font-bold text-slate-900">
+                        {user.username}
+                      </p>
+                    </article>
 
-                  <p className="text-lg text-gray-800">
-                    {user.birthday}
-                  </p>
-                </div>
+                    <article className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                      <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+                        Full Name
+                      </p>
+
+                      <p className="mt-2 break-words text-lg font-bold text-slate-900">
+                        {user.name}
+                      </p>
+                    </article>
+
+                    <article className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                      <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+                        Email Address
+                      </p>
+
+                      <p className="mt-2 break-all text-lg font-bold text-slate-900">
+                        {user.email}
+                      </p>
+                    </article>
+
+                    <article className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                      <p className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+                        Birthday
+                      </p>
+
+                      <p className="mt-2 text-lg font-bold text-slate-900">
+                        {user.birthday ||
+                          "Not provided"}
+                      </p>
+                    </article>
+                  </div>
+                </section>
+
+                <aside className="space-y-6">
+                  <section className="rounded-2xl bg-slate-900 p-6 text-white shadow-lg">
+                    <p className="text-sm font-semibold uppercase tracking-widest text-amber-300">
+                      Quick Actions
+                    </p>
+
+                    <h2 className="mt-2 text-2xl font-bold">
+                      Continue Your Adventure
+                    </h2>
+
+                    <p className="mt-3 leading-7 text-slate-300">
+                      Open your character
+                      dashboard or begin
+                      creating a new hero.
+                    </p>
+
+                    <div className="mt-6 space-y-3">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          navigate(
+                            "/dashboard",
+                          )
+                        }
+                        className="w-full rounded-xl bg-purple-600 px-5 py-3 font-semibold text-white transition hover:-translate-y-0.5 hover:bg-purple-500 focus:outline-none focus:ring-4 focus:ring-purple-300/30"
+                      >
+                        View Dashboard
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          navigate(
+                            "/character/create",
+                          )
+                        }
+                        className="w-full rounded-xl bg-amber-400 px-5 py-3 font-bold text-slate-950 transition hover:-translate-y-0.5 hover:bg-amber-300 focus:outline-none focus:ring-4 focus:ring-amber-300/30"
+                      >
+                        Create Character
+                      </button>
+                    </div>
+                  </section>
+
+                  <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <p className="text-sm font-semibold uppercase tracking-widest text-red-600">
+                      Account Session
+                    </p>
+
+                    <h2 className="mt-2 text-xl font-bold text-slate-900">
+                      Sign Out
+                    </h2>
+
+                    <p className="mt-3 text-sm leading-6 text-slate-600">
+                      Logging out will remove
+                      the current local session
+                      from this browser.
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={logoutUser}
+                      className="mt-6 w-full rounded-xl border border-red-200 bg-red-50 px-5 py-3 font-semibold text-red-700 transition hover:bg-red-600 hover:text-white focus:outline-none focus:ring-4 focus:ring-red-200"
+                    >
+                      Logout
+                    </button>
+                  </section>
+                </aside>
               </div>
-
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <button
-                  type="button"
-                  onClick={() =>
-                    navigate("/dashboard")
-                  }
-                  className="w-full rounded-md bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700"
-                >
-                  View Dashboard
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    navigate("/character/create")
-                  }
-                  className="w-full rounded-md bg-green-600 py-3 font-semibold text-white transition hover:bg-green-700"
-                >
-                  Create Character
-                </button>
-              </div>
-
-              <button
-                type="button"
-                onClick={logoutUser}
-                className="mt-3 w-full rounded-md bg-red-600 py-3 font-semibold text-white transition hover:bg-red-700"
-              >
-                Logout
-              </button>
-            </>
+            </div>
           ) : (
-            <div className="mt-8 text-center">
-              <p className="mb-5 text-gray-600">
-                No user information was found.
-                Please create an account.
-              </p>
+            <div className="mx-auto max-w-lg overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
+              <header className="bg-gradient-to-r from-slate-950 via-indigo-950 to-purple-950 px-6 py-8 text-center text-white">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-amber-400 bg-slate-800 text-4xl">
+                  👤
+                </div>
 
-              <button
-                type="button"
-                onClick={() =>
-                  navigate("/signup")
-                }
-                className="w-full rounded-md bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700"
-              >
-                Create Account
-              </button>
+                <h1 className="mt-5 text-3xl font-bold">
+                  No User Found
+                </h1>
+
+                <p className="mt-2 text-slate-300">
+                  No saved account information
+                  is available.
+                </p>
+              </header>
+
+              <div className="p-6 text-center sm:p-8">
+                <p className="leading-7 text-slate-600">
+                  Please create an account or
+                  sign in before accessing the
+                  profile page.
+                </p>
+
+                <div className="mt-6 space-y-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      navigate("/signup")
+                    }
+                    className="w-full rounded-xl bg-purple-700 px-5 py-3 font-semibold text-white transition hover:bg-purple-800 focus:outline-none focus:ring-4 focus:ring-purple-200"
+                  >
+                    Create Account
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      navigate("/login")
+                    }
+                    className="w-full rounded-xl bg-slate-700 px-5 py-3 font-semibold text-white transition hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-200"
+                  >
+                    Go to Login
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </section>
